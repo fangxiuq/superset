@@ -23,6 +23,10 @@ from flask import Flask
 
 from superset.initialization import SupersetAppInitializer
 
+##### fangzi add at 2023/12/7 解决myql8.X报错的问题
+import pymysql
+pymysql.install_as_MySQLdb()
+
 logger = logging.getLogger(__name__)
 
 
