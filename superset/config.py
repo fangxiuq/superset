@@ -287,10 +287,10 @@ AUTH_RATE_LIMIT = "5 per second"
 # GLOBALS FOR APP Builder
 # ------------------------------
 # Uncomment to setup Your App name
-APP_NAME = "Superset"
+APP_NAME = "价值发现"
 
 # Specify the App icon
-APP_ICON = "/static/assets/images/superset-logo-horiz.png"
+APP_ICON = "/static/assets/images/logo1.png"
 
 # Specify where clicking the logo would take the user
 # e.g. setting it to '/' would take the user to '/superset/welcome/'
