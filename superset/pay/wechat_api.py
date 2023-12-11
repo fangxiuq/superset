@@ -2,7 +2,7 @@
 """
 @author:孟小征
 @software:PyCharm
-@file wechat_pay.py
+@file wechat_api.py
 @time 2023/12/11 09:45
 """
 
@@ -13,8 +13,8 @@ from random import sample
 from string import ascii_letters, digits
 import time
 import uuid
-
-from flask import Flask, jsonify, request
+from flask_appbuilder.api import expose
+from flask import jsonify, request
 
 from wechatpayv3 import WeChatPay, WeChatPayType
 
@@ -79,3 +79,26 @@ def native_pay(out_trade_no, description, amount):
         pay_type=WeChatPayType.NATIVE
     )
     return jsonify({'code': code, 'message': message})
+
+
+@expose("/pay/wechat/notify", methods=("POST",))
+def notify():
+    result = wxpay.callback(request.headers, request.data)
+    if result and result.get('event_type') == 'TRANSACTION.SUCCESS':
+        resp = result.get('resource')
+        appid = resp.get('appid')
+        mchid = resp.get('mchid')
+        out_trade_no = resp.get('out_trade_no')
+        transaction_id = resp.get('transaction_id')
+        trade_type = resp.get('trade_type')
+        trade_state = resp.get('trade_state')
+        trade_state_desc = resp.get('trade_state_desc')
+        bank_type = resp.get('bank_type')
+        attach = resp.get('attach')
+        success_time = resp.get('success_time')
+        payer = resp.get('payer')
+        amount = resp.get('amount').get('total')
+        # TODO: 根据返回参数进行必要的业务处理，处理完后返回200或204
+        return jsonify({'code': 'SUCCESS', 'message': '成功'})
+    else:
+        return jsonify({'code': 'FAILED', 'message': '失败'}), 500
