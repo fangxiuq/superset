@@ -2,7 +2,7 @@
 """
 @author:孟小征
 @software:PyCharm
-@file wechat_api.py
+@file pay.py
 @time 2023/12/11 09:45
 """
 
