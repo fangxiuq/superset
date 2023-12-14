@@ -9,11 +9,13 @@ import time
 import hashlib
 import requests
 from lxml import etree
-from flask import g, Response
+from flask import g, Response, request
 from superset.views.base_api import BaseSupersetApi
-from superset.wechat.appKeys import APPID
+from superset.wechat.appKeys import APPID, APPSECRET
 from superset.wechat.schema import WechatLoginToQrcode
 from flask_appbuilder.api import expose, safe
+
+from superset.wechat.util import weChatRequest
 
 qrcode_response_schema = WechatLoginToQrcode()
 
@@ -47,3 +49,19 @@ class WechatLoginRestApi(BaseSupersetApi):
             qrcode = ''
 
         return self.response(200, result={'qrcode': qrcode})
+
+    @expose("/login", methods=("GET",))
+    def wechatLogin(self):
+        code = request.args.get('code', '')
+        state = request.args.get('state', '')
+        result = weChatRequest(
+            url=f"https://api.weixin.qq.com/sns/oauth2/access_token?appid={APPID}&secret="
+                f"{APPSECRET}&code={code}&grant_type=authorization_code"
+        )
+        openid = result.get("openid", "")
+        access_token = result.get("access_token", "")
+        if not openid or not access_token:
+            return self.response(401, **{"message": "请求微信服务器失败"})
+
+
+
